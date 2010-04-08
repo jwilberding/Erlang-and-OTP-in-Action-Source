@@ -10,7 +10,7 @@
 -behaviour(supervisor).
 
 %% API
--export([start_link/1, start_child/0]).
+-export([start_link/0]).
 
 %% Supervisor callbacks
 -export([init/1]).
@@ -31,24 +31,13 @@
 %%--------------------------------------------------------------------
 start_link() ->
     Port =
-	case application:get_env(protobuffs_interface, port) of
+	case application:get_env(restful_interface, port) of
 	    {ok, Port_} ->
 		Port_;
-	    undefined -> ?DEFAULT_PORT
+	    undefined -> 
+		?DEFAULT_PORT
 	end,
-    
-    {ok, LSock} = gen_tcp:listen(Port, [binary, {active, false}, {packet, raw}, {reuseaddr, true}]),
-    supervisor:start_link({local, ?SERVER}, ?MODULE, [LSock]).
-
-%%--------------------------------------------------------------------
-%% @doc
-%% Start a child process, an sc_connection.
-%%
-%% @spec start_child() -> void()
-%% @end
-%%--------------------------------------------------------------------
-start_child() ->
-    supervisor:start_child(?SERVER, []).
+    supervisor:start_link({local, ?SERVER}, ?MODULE, [Port]).
 
 %%%===================================================================
 %%% Supervisor callbacks
@@ -67,8 +56,8 @@ start_child() ->
 %% {error, Reason}
 %% @end
 %%--------------------------------------------------------------------
-init([LSock]) ->
-    RestartStrategy = simple_one_for_one,
+init([Port]) ->
+    RestartStrategy = one_for_one,
     MaxRestarts = 0,
     MaxSecondsBetweenRestarts = 1,
     
@@ -78,8 +67,8 @@ init([LSock]) ->
     Shutdown = brutal_kill,
     Type = worker,
     
-    WebSocket = {ri_web_socket, {ri_web_socket, start_link, [LSock]},
-		 Restart, Shutdown, Type, [ri_web_socket]},
+    WebSocket = {ri_gws_impl, {ri_gws_impl, start_link, [Port]},
+		 Restart, Shutdown, Type, [ri_gws_impl]},
     
     {ok, {SupFlags, [WebSocket]}}.
 

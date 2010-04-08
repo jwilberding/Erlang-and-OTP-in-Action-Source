@@ -65,7 +65,7 @@ fetch(Pid) ->
 %% @doc
 %% Replace an element in the cache.
 %%
-%% @spec replace(Value) -> ok | {error, Reason}
+%% @spec replace(Pid, Value) -> ok | {error, Reason}
 %% @end
 %%--------------------------------------------------------------------
 replace(Pid, Value) ->

@@ -1,7 +1,12 @@
 %%%----------------------------------------------------------------
 %%% @author Martin Logan <martinjlogan@erlware.org>
 %%% @doc
-%%%
+%%% Example test calls:
+%%% <pre>
+%%%  put: curl -T SomeFile http://localhost:1156/key
+%%%  get: curl http://localhost:1156/key
+%%%  delete: curl -X DELETE http://localhost:1156/key
+%%% </pre>
 %%% @end
 %%% @copyright 2008 Martin Logan
 %%%----------------------------------------------------------------,
@@ -35,7 +40,6 @@
 start(_StartType, _StartArgs) ->
     case ri_sup:start_link() of
 	{ok, Pid} ->
-	    ri_sup:start_child(),
 	    {ok, Pid};
 	Error ->
 	    Error

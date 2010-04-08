@@ -4,7 +4,7 @@
    {vsn, "0.1.0"},
    {modules, [ri_app,
               ri_sup,
-              ri_gws_impl,
+              ri_gws_impl
               ]},
    {registered,[pi_sup]},
    {applications, [kernel, stdlib]},

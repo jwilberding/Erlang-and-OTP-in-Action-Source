@@ -52,6 +52,7 @@ start_link(Callback, LSock, UserArgs) ->
 %% @end
 %%--------------------------------------------------------------------
 init([Callback, LSock, UserArgs, Parent]) ->
+    error_logger:info_msg("in init calling to ~p~n", [Callback]),
     {ok, UserState} = Callback:init(UserArgs),
     {ok, #state{lsock = LSock, callback = Callback, user_state = UserState, parent = Parent}, 0}.
 
